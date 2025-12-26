@@ -35,6 +35,11 @@ public class Rental {
         return active;
     }
 
+    // ✅ Commit 5 ile eklenen: Payment için ücret lazım
+    public double getTotalFee() {
+        return totalFee;
+    }
+
     public void closeRental() {
         if (!active) {
             throw new IllegalStateException("Bu kiralama zaten kapatılmış.");
