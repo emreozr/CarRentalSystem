@@ -9,11 +9,11 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         CarInventory inventory = new CarInventory();
 
-        // Başlangıç araçları
-        inventory.addCar(new GasCar(1, "Toyota", "Corolla", 800, "Benzin"));
+        // Başlangıç araçları (ENUM kullanılıyor)
+        inventory.addCar(new GasCar(1, "Toyota", "Corolla", 800, FuelType.BENZIN));
         inventory.addCar(new ElectricCar(2, "Tesla", "Model 3", 1200, 500));
 
-        // ✅ Commit 5: sistem kayıt listeleri
+        // Sistem kayıtları
         List<Customer> customers = new ArrayList<>();
         List<Rental> rentals = new ArrayList<>();
         List<Payment> payments = new ArrayList<>();
@@ -25,8 +25,8 @@ public class Main {
         while (true) {
             System.out.println("\n=== ARAÇ KİRALAMA SİSTEMİ ===");
             System.out.println("1 - Müsait araçları listele");
-            System.out.println("2 - Araç kirala (Rental + Payment)");
-            System.out.println("3 - Araç iade et (Rental ID ile)");
+            System.out.println("2 - Araç kirala");
+            System.out.println("3 - Araç iade et (Rental ID)");
             System.out.println("4 - Tüm araçları listele");
             System.out.println("5 - Kiralamaları listele");
             System.out.println("6 - Ödemeleri listele");
@@ -34,7 +34,7 @@ public class Main {
             System.out.print("Seçim: ");
 
             int choice = sc.nextInt();
-            sc.nextLine(); // buffer temizliği
+            sc.nextLine(); // buffer temizle
 
             try {
                 switch (choice) {
@@ -71,8 +71,9 @@ public class Main {
                         Rental rental = new Rental(nextRentalId++, car, customer, days);
                         rentals.add(rental);
 
-                        System.out.print("Ödeme yöntemi (CASH/CARD): ");
-                        String method = sc.nextLine().trim().toUpperCase();
+                        System.out.print("Ödeme yöntemi (CASH / CARD): ");
+                        PaymentMethod method =
+                                PaymentMethod.valueOf(sc.nextLine().trim().toUpperCase());
 
                         Payment payment = new Payment(
                                 nextPaymentId++,
@@ -82,8 +83,10 @@ public class Main {
                         );
                         payments.add(payment);
 
-                        System.out.println("Kiralama oluşturuldu: " + rental);
-                        System.out.println("Ödeme alındı: " + payment);
+                        System.out.println("Kiralama oluşturuldu:");
+                        System.out.println(rental);
+                        System.out.println("Ödeme alındı:");
+                        System.out.println(payment);
                     }
 
                     case 3 -> {
@@ -105,14 +108,16 @@ public class Main {
                         }
 
                         found.closeRental();
-                        System.out.println("Kiralama kapatıldı / araç iade edildi: " + found);
+                        System.out.println("Kiralama kapatıldı:");
+                        System.out.println(found);
                     }
 
                     case 4 -> inventory.listAllCars();
 
                     case 5 -> {
-                        if (rentals.isEmpty()) System.out.println("Kiralama yok.");
-                        else {
+                        if (rentals.isEmpty()) {
+                            System.out.println("Kiralama yok.");
+                        } else {
                             for (Rental r : rentals) {
                                 System.out.println(r);
                             }
@@ -120,8 +125,9 @@ public class Main {
                     }
 
                     case 6 -> {
-                        if (payments.isEmpty()) System.out.println("Ödeme yok.");
-                        else {
+                        if (payments.isEmpty()) {
+                            System.out.println("Ödeme yok.");
+                        } else {
                             for (Payment p : payments) {
                                 System.out.println(p);
                             }
@@ -136,8 +142,10 @@ public class Main {
 
                     default -> System.out.println("Geçersiz seçim!");
                 }
+            } catch (IllegalArgumentException e) {
+                System.out.println("Hatalı giriş: " + e.getMessage());
             } catch (Exception e) {
-                System.out.println("Hata: " + e.getMessage());
+                System.out.println("Beklenmeyen hata: " + e.getMessage());
             }
         }
     }

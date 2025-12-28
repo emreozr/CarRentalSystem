@@ -1,19 +1,22 @@
 package com.carrental;
 
 public class GasCar extends Car {
-    private final String fuelType; // Benzin/Dizel/LPG
+    private final FuelType fuelType;
 
-    public GasCar(int id, String brand, String model, double dailyRate, String fuelType) {
+    public GasCar(int id, String brand, String model, double dailyRate, FuelType fuelType) {
         super(id, brand, model, dailyRate);
         this.fuelType = fuelType;
     }
 
-    public String getFuelType() { return fuelType; }
+    public FuelType getFuelType() {
+        return fuelType;
+    }
 
     @Override
     public double calculateRentalFee(int days) {
-        if (days <= 0) throw new IllegalArgumentException("Gün sayısı 1 veya daha fazla olmalı!");
-        // örnek: yakıtlı araçlarda küçük servis ücreti
+        if (days <= 0) {
+            throw new IllegalArgumentException("Gün sayısı 1 veya daha fazla olmalı!");
+        }
         double serviceFee = 50.0;
         return days * getDailyRate() + serviceFee;
     }

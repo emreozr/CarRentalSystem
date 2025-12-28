@@ -6,10 +6,10 @@ public class Payment {
     private final int paymentId;
     private final int rentalId;
     private final double amount;
-    private final String method; // CASH / CARD
+    private final PaymentMethod method;
     private final LocalDateTime paidAt;
 
-    public Payment(int paymentId, int rentalId, double amount, String method) {
+    public Payment(int paymentId, int rentalId, double amount, PaymentMethod method) {
         this.paymentId = paymentId;
         this.rentalId = rentalId;
         this.amount = amount;
@@ -29,7 +29,7 @@ public class Payment {
         return amount;
     }
 
-    public String getMethod() {
+    public PaymentMethod getMethod() {
         return method;
     }
 
