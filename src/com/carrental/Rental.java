@@ -8,7 +8,7 @@ public class Rental {
     private final Customer customer;
     private final LocalDate startDate;
     private final int days;
-    private boolean active;
+    private RentalStatus status;
     private final double totalFee;
 
     public Rental(int rentalId, Car car, Customer customer, int days) {
@@ -21,7 +21,8 @@ public class Rental {
         this.days = days;
         this.startDate = LocalDate.now();
         this.totalFee = car.calculateRentalFee(days);
-        this.active = true;
+
+        this.status = RentalStatus.ACTIVE;
 
         // araç kiralanır
         car.rent();
@@ -31,20 +32,23 @@ public class Rental {
         return rentalId;
     }
 
-    public boolean isActive() {
-        return active;
+    public RentalStatus getStatus() {
+        return status;
     }
 
-    // ✅ Commit 5 ile eklenen: Payment için ücret lazım
+    public boolean isActive() {
+        return status == RentalStatus.ACTIVE;
+    }
+
     public double getTotalFee() {
         return totalFee;
     }
 
     public void closeRental() {
-        if (!active) {
+        if (status == RentalStatus.RETURNED) {
             throw new IllegalStateException("Bu kiralama zaten kapatılmış.");
         }
-        active = false;
+        status = RentalStatus.RETURNED;
         car.returnCar();
     }
 
@@ -55,6 +59,6 @@ public class Rental {
                 " | Müşteri: " + customer.getName() +
                 " | Gün: " + days +
                 " | Ücret: " + totalFee +
-                " | Durum: " + (active ? "AKTİF" : "İADE EDİLDİ");
+                " | Durum: " + status;
     }
 }
