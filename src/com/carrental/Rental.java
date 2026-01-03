@@ -13,8 +13,9 @@ public class Rental {
 
     public Rental(int rentalId, Car car, Customer customer, int days) {
         if (days <= 0) {
-            throw new IllegalArgumentException("Kiralama günü 1 veya daha fazla olmalı.");
+            throw new InvalidRentalPeriodException("Kiralama günü 1 veya daha fazla olmalı.");
         }
+
         this.rentalId = rentalId;
         this.car = car;
         this.customer = customer;
@@ -24,7 +25,7 @@ public class Rental {
 
         this.status = RentalStatus.ACTIVE;
 
-        // araç kiralanır
+        // araç kiralanır (Car içinde zaten kontrol var)
         car.rent();
     }
 
@@ -46,7 +47,7 @@ public class Rental {
 
     public void closeRental() {
         if (status == RentalStatus.RETURNED) {
-            throw new IllegalStateException("Bu kiralama zaten kapatılmış.");
+            throw new RentalAlreadyClosedException("Bu kiralama zaten kapatılmış.");
         }
         status = RentalStatus.RETURNED;
         car.returnCar();
