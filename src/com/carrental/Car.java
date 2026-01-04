@@ -12,7 +12,7 @@ public abstract class Car implements Rentable {
         this.brand = brand;
         this.model = model;
         this.dailyRate = dailyRate;
-        this.available = true; // başta müsait
+        this.available = true;
     }
 
     public int getId() { return id; }
@@ -21,17 +21,23 @@ public abstract class Car implements Rentable {
     public double getDailyRate() { return dailyRate; }
 
     @Override
-    public boolean isAvailable() { return available; }
+    public boolean isAvailable() {
+        return available;
+    }
 
     @Override
     public void rent() {
-        if (!available) throw new IllegalStateException("Araç zaten kirada!");
+        if (!available) {
+            throw new CarNotAvailableException("Araç şu anda müsait değil.");
+        }
         available = false;
     }
 
     @Override
     public void returnCar() {
-        if (available) throw new IllegalStateException("Araç zaten müsait görünüyor!");
+        if (available) {
+            throw new IllegalStateException("Araç zaten müsait.");
+        }
         available = true;
     }
 
@@ -40,7 +46,13 @@ public abstract class Car implements Rentable {
 
     @Override
     public String toString() {
-        return String.format("[%d] %s %s | Günlük: %.2f | %s",
-                id, brand, model, dailyRate, (available ? "MÜSAİT" : "KİRADA"));
+        return String.format(
+                "[%d] %s %s | Günlük: %.2f | %s",
+                id,
+                brand,
+                model,
+                dailyRate,
+                (available ? "MÜSAİT" : "KİRADA")
+        );
     }
 }
