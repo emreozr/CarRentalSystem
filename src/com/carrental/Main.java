@@ -19,7 +19,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // Başlangıç araçları
         inventory.addCar(new GasCar(1, "Toyota", "Corolla", 800, FuelType.BENZIN));
         inventory.addCar(new ElectricCar(2, "Tesla", "Model 3", 1200, 500));
 
@@ -44,7 +43,7 @@ public class Main {
         }
     }
 
-    // ---------- MENU & HELPERS ----------
+    // ---------- MENU ----------
 
     private static void printMenu() {
         System.out.println("\n=== ARAÇ KİRALAMA SİSTEMİ ===");
@@ -57,16 +56,52 @@ public class Main {
         System.out.println("0 - Çıkış");
     }
 
+    // ---------- INPUT HELPERS ----------
+
     private static int readInt(String label) {
         System.out.print(label);
+        while (!sc.hasNextInt()) {
+            sc.nextLine();
+            System.out.print("Geçerli bir sayı giriniz: ");
+        }
         int val = sc.nextInt();
-        sc.nextLine(); // buffer temizle
+        sc.nextLine();
+        return val;
+    }
+
+    private static int readPositiveInt(String label) {
+        int val;
+        do {
+            val = readInt(label);
+            if (val <= 0) System.out.println("Değer 1 veya daha büyük olmalı.");
+        } while (val <= 0);
         return val;
     }
 
     private static String readLine(String label) {
         System.out.print(label);
-        return sc.nextLine();
+        return sc.nextLine().trim();
+    }
+
+    private static String readPhone(String label) {
+        String phone;
+        do {
+            phone = readLine(label);
+            if (!phone.matches("\\d{10,11}")) {
+                System.out.println("Telefon sadece rakam ve 10-11 haneli olmalı.");
+            }
+        } while (!phone.matches("\\d{10,11}"));
+        return phone;
+    }
+
+    private static PaymentMethod readPaymentMethod(String label) {
+        while (true) {
+            try {
+                return PaymentMethod.valueOf(readLine(label).toUpperCase());
+            } catch (IllegalArgumentException e) {
+                System.out.println("Geçersiz yöntem. (CASH / CARD)");
+            }
+        }
     }
 
     // ---------- OPERATIONS ----------
@@ -84,18 +119,17 @@ public class Main {
         }
 
         String name = readLine("Müşteri adı: ");
-        String phone = readLine("Telefon: ");
+        String phone = readPhone("Telefon (10-11 hane): ");
 
         Customer customer = new Customer(nextCustomerId++, name, phone);
         customers.add(customer);
 
-        int days = readInt("Kaç gün kiralanacak? ");
+        int days = readPositiveInt("Kaç gün kiralanacak? ");
 
         Rental rental = new Rental(nextRentalId++, car, customer, days);
         rentals.add(rental);
 
-        PaymentMethod method =
-                PaymentMethod.valueOf(readLine("Ödeme yöntemi (CASH / CARD): ").toUpperCase());
+        PaymentMethod method = readPaymentMethod("Ödeme yöntemi (CASH / CARD): ");
 
         Payment payment = new Payment(
                 nextPaymentId++,
@@ -113,7 +147,6 @@ public class Main {
 
     private static void handleReturn() {
         int rid = readInt("İade edilecek Rental ID: ");
-
         for (Rental r : rentals) {
             if (r.getRentalId() == rid) {
                 r.closeRental();
