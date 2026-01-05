@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Console-based car rental application.
+ * Handles user interaction and system workflow.
+ */
+
 public class Main {
 
     private static final Scanner sc = new Scanner(System.in);

@@ -2,7 +2,11 @@ package com.carrental;
 
 import java.time.LocalDate;
 
+/**
+ * Represents a rental transaction between a customer and a car.
+ */
 public class Rental {
+
     private final int rentalId;
     private final Car car;
     private final Customer customer;
@@ -11,21 +15,26 @@ public class Rental {
     private RentalStatus status;
     private final double totalFee;
 
+    /**
+     * Creates a new rental.
+     *
+     * @param rentalId unique rental identifier
+     * @param car      rented car
+     * @param customer renting customer
+     * @param days     rental duration in days
+     */
     public Rental(int rentalId, Car car, Customer customer, int days) {
         if (days <= 0) {
             throw new InvalidRentalPeriodException("Kiralama günü 1 veya daha fazla olmalı.");
         }
-
         this.rentalId = rentalId;
         this.car = car;
         this.customer = customer;
         this.days = days;
         this.startDate = LocalDate.now();
         this.totalFee = car.calculateRentalFee(days);
-
         this.status = RentalStatus.ACTIVE;
 
-        // araç kiralanır (Car içinde zaten kontrol var)
         car.rent();
     }
 
@@ -41,10 +50,16 @@ public class Rental {
         return status == RentalStatus.ACTIVE;
     }
 
+    /**
+     * @return total rental fee
+     */
     public double getTotalFee() {
         return totalFee;
     }
 
+    /**
+     * Closes the rental and returns the car.
+     */
     public void closeRental() {
         if (status == RentalStatus.RETURNED) {
             throw new RentalAlreadyClosedException("Bu kiralama zaten kapatılmış.");
