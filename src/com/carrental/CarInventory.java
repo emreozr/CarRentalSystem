@@ -35,8 +35,57 @@ public class CarInventory {
     }
 
     public void listAllCars() {
+        if (cars.isEmpty()) {
+            System.out.println("Araç yok.");
+            return;
+        }
         for (Car car : cars) {
             System.out.println(car);
         }
+    }
+
+    // ---------------- FILTERING ----------------
+
+    public List<Car> filterAvailableByBrand(String brand) {
+        List<Car> result = new ArrayList<>();
+        for (Car car : cars) {
+            if (car.isAvailable() && car.getBrand().equalsIgnoreCase(brand)) {
+                result.add(car);
+            }
+        }
+        return result;
+    }
+
+    public List<Car> filterAvailableGasCars() {
+        List<Car> result = new ArrayList<>();
+        for (Car car : cars) {
+            if (car.isAvailable() && car instanceof GasCar) {
+                result.add(car);
+            }
+        }
+        return result;
+    }
+
+    public List<Car> filterAvailableElectricCars() {
+        List<Car> result = new ArrayList<>();
+        for (Car car : cars) {
+            if (car.isAvailable() && car instanceof ElectricCar) {
+                result.add(car);
+            }
+        }
+        return result;
+    }
+
+    public List<Car> filterAvailableByFuelType(FuelType fuelType) {
+        List<Car> result = new ArrayList<>();
+        for (Car car : cars) {
+            if (car.isAvailable() && car instanceof GasCar) {
+                GasCar g = (GasCar) car;
+                if (g.getFuelType() == fuelType) {
+                    result.add(car);
+                }
+            }
+        }
+        return result;
     }
 }

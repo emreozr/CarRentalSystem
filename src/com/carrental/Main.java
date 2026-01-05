@@ -4,11 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Console-based car rental application.
- * Handles user interaction and system workflow.
- */
-
 public class Main {
 
     private static final Scanner sc = new Scanner(System.in);
@@ -24,8 +19,12 @@ public class Main {
 
     public static void main(String[] args) {
 
+        // başlangıç araçları (istersen çoğaltabiliriz)
         inventory.addCar(new GasCar(1, "Toyota", "Corolla", 800, FuelType.BENZIN));
+        inventory.addCar(new GasCar(3, "Toyota", "Yaris", 700, FuelType.DIZEL));
+        inventory.addCar(new GasCar(4, "Renault", "Clio", 650, FuelType.LPG));
         inventory.addCar(new ElectricCar(2, "Tesla", "Model 3", 1200, 500));
+        inventory.addCar(new ElectricCar(5, "Togg", "T10X", 1000, 520));
 
         while (true) {
             printMenu();
@@ -39,6 +38,7 @@ public class Main {
                     case 4 -> inventory.listAllCars();
                     case 5 -> listRentals();
                     case 6 -> listPayments();
+                    case 7 -> handleFilteringMenu(); // ✅ yeni
                     case 0 -> exit();
                     default -> System.out.println("Geçersiz seçim!");
                 }
@@ -48,8 +48,6 @@ public class Main {
         }
     }
 
-    // ---------- MENU ----------
-
     private static void printMenu() {
         System.out.println("\n=== ARAÇ KİRALAMA SİSTEMİ ===");
         System.out.println("1 - Müsait araçları listele");
@@ -58,10 +56,9 @@ public class Main {
         System.out.println("4 - Tüm araçları listele");
         System.out.println("5 - Kiralamaları listele");
         System.out.println("6 - Ödemeleri listele");
+        System.out.println("7 - Filtreleme menüsü");
         System.out.println("0 - Çıkış");
     }
-
-    // ---------- INPUT HELPERS ----------
 
     private static int readInt(String label) {
         System.out.print(label);
@@ -109,7 +106,7 @@ public class Main {
         }
     }
 
-    // ---------- OPERATIONS ----------
+    // ---------------- CORE FLOW ----------------
 
     private static void handleRent() {
         int carId = readInt("Araç ID: ");
@@ -177,6 +174,53 @@ public class Main {
             return;
         }
         payments.forEach(System.out::println);
+    }
+
+    // ---------------- FILTER MENU ----------------
+
+    private static void handleFilteringMenu() {
+        System.out.println("\n--- FİLTRELEME MENÜSÜ ---");
+        System.out.println("1 - Markaya göre müsait araçlar");
+        System.out.println("2 - Sadece benzinli/dizel/lpg (FuelType) müsait araçlar");
+        System.out.println("3 - Sadece GasCar müsait araçlar");
+        System.out.println("4 - Sadece ElectricCar müsait araçlar");
+        System.out.println("0 - Geri dön");
+        int c = readInt("Seçim: ");
+
+        switch (c) {
+            case 1 -> {
+                String brand = readLine("Marka gir: ");
+                printCars(inventory.filterAvailableByBrand(brand));
+            }
+            case 2 -> {
+                FuelType ft = readFuelType("Yakıt türü (BENZIN/DIZEL/LPG): ");
+                printCars(inventory.filterAvailableByFuelType(ft));
+            }
+            case 3 -> printCars(inventory.filterAvailableGasCars());
+            case 4 -> printCars(inventory.filterAvailableElectricCars());
+            case 0 -> { return; }
+            default -> System.out.println("Geçersiz seçim!");
+        }
+    }
+
+    private static FuelType readFuelType(String label) {
+        while (true) {
+            try {
+                return FuelType.valueOf(readLine(label).toUpperCase());
+            } catch (IllegalArgumentException e) {
+                System.out.println("Geçersiz yakıt türü. (BENZIN/DIZEL/LPG)");
+            }
+        }
+    }
+
+    private static void printCars(List<Car> cars) {
+        if (cars.isEmpty()) {
+            System.out.println("Sonuç yok.");
+            return;
+        }
+        for (Car car : cars) {
+            System.out.println(car);
+        }
     }
 
     private static void exit() {
