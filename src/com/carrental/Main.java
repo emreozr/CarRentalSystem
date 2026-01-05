@@ -19,12 +19,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // başlangıç araçları (istersen çoğaltabiliriz)
-        inventory.addCar(new GasCar(1, "Toyota", "Corolla", 800, FuelType.BENZIN));
-        inventory.addCar(new GasCar(3, "Toyota", "Yaris", 700, FuelType.DIZEL));
-        inventory.addCar(new GasCar(4, "Renault", "Clio", 650, FuelType.LPG));
-        inventory.addCar(new ElectricCar(2, "Tesla", "Model 3", 1200, 500));
-        inventory.addCar(new ElectricCar(5, "Togg", "T10X", 1000, 520));
+        // ✅ 50 aracı tek seferde yükle
+        inventory.addCars(DataSeeder.seedCars());
 
         while (true) {
             printMenu();
@@ -38,7 +34,7 @@ public class Main {
                     case 4 -> inventory.listAllCars();
                     case 5 -> listRentals();
                     case 6 -> listPayments();
-                    case 7 -> handleFilteringMenu(); // ✅ yeni
+                    case 7 -> handleFilteringMenu();
                     case 0 -> exit();
                     default -> System.out.println("Geçersiz seçim!");
                 }
@@ -101,12 +97,10 @@ public class Main {
             try {
                 return PaymentMethod.valueOf(readLine(label).toUpperCase());
             } catch (IllegalArgumentException e) {
-                System.out.println("Geçersiz yöntem. (CASH / CARD)");
+                System.out.println("Geçersiz yöntem. (CASH / CARD / TRANSFER / MOBILE_PAY)");
             }
         }
     }
-
-    // ---------------- CORE FLOW ----------------
 
     private static void handleRent() {
         int carId = readInt("Araç ID: ");
@@ -131,7 +125,8 @@ public class Main {
         Rental rental = new Rental(nextRentalId++, car, customer, days);
         rentals.add(rental);
 
-        PaymentMethod method = readPaymentMethod("Ödeme yöntemi (CASH / CARD): ");
+        PaymentMethod method =
+                readPaymentMethod("Ödeme yöntemi (CASH / CARD / TRANSFER / MOBILE_PAY): ");
 
         Payment payment = new Payment(
                 nextPaymentId++,
@@ -176,12 +171,10 @@ public class Main {
         payments.forEach(System.out::println);
     }
 
-    // ---------------- FILTER MENU ----------------
-
     private static void handleFilteringMenu() {
         System.out.println("\n--- FİLTRELEME MENÜSÜ ---");
         System.out.println("1 - Markaya göre müsait araçlar");
-        System.out.println("2 - Sadece benzinli/dizel/lpg (FuelType) müsait araçlar");
+        System.out.println("2 - Yakıt türüne göre (BENZIN/DIZEL/LPG) müsait araçlar");
         System.out.println("3 - Sadece GasCar müsait araçlar");
         System.out.println("4 - Sadece ElectricCar müsait araçlar");
         System.out.println("0 - Geri dön");

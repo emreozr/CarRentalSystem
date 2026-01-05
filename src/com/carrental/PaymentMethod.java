@@ -2,5 +2,7 @@ package com.carrental;
 
 public enum PaymentMethod {
     CASH,
-    CARD
+    CARD,
+    TRANSFER,
+    MOBILE_PAY
 }

@@ -8,7 +8,11 @@ public class CarInventory {
 
     public void addCar(Car car) {
         cars.add(car);
-        System.out.println("Araç eklendi.");
+    }
+
+    public void addCars(List<Car> carList) {
+        cars.addAll(carList);
+        System.out.println(carList.size() + " araç envantere eklendi.");
     }
 
     public void removeCar(int id) {
@@ -44,7 +48,7 @@ public class CarInventory {
         }
     }
 
-    // ---------------- FILTERING ----------------
+    // ---------------- FILTERING (varsa önceki committen kaldıysa kalsın) ----------------
 
     public List<Car> filterAvailableByBrand(String brand) {
         List<Car> result = new ArrayList<>();
