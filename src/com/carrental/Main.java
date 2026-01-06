@@ -19,7 +19,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // ✅ 50 araç seed (Electric + Luxury dahil)
+        // 50 araç seed (Gas + Electric + Luxury)
         inventory.addCars(DataSeeder.seedCars());
 
         while (true) {
@@ -35,8 +35,9 @@ public class Main {
                     case 5 -> listRentals();
                     case 6 -> listPayments();
                     case 7 -> handleFilteringMenu();
-                    case 8 -> handleAddCar();     // yeni
-                    case 9 -> handleRemoveCar();  // yeni
+                    case 8 -> handleAddCar();
+                    case 9 -> handleRemoveCar();
+                    case 10 -> printReceipt();
                     case 0 -> exit();
                     default -> System.out.println("Geçersiz seçim!");
                 }
@@ -45,6 +46,8 @@ public class Main {
             }
         }
     }
+
+    // ================= MENU =================
 
     private static void printMenu() {
         System.out.println("\n=== ARAÇ KİRALAMA SİSTEMİ ===");
@@ -57,10 +60,11 @@ public class Main {
         System.out.println("7 - Filtreleme menüsü");
         System.out.println("8 - Araç ekle");
         System.out.println("9 - Araç sil (ID)");
+        System.out.println("10 - Receipt / Fiş yazdır");
         System.out.println("0 - Çıkış");
     }
 
-    // -------- INPUT HELPERS --------
+    // ================= INPUT =================
 
     private static int readInt(String label) {
         System.out.print(label);
@@ -103,7 +107,7 @@ public class Main {
             try {
                 return PaymentMethod.valueOf(readLine(label).toUpperCase());
             } catch (IllegalArgumentException e) {
-                System.out.println("Geçersiz yöntem. (CASH / CARD / TRANSFER / MOBILE_PAY)");
+                System.out.println("Geçersiz yöntem (CASH / CARD / TRANSFER / MOBILE_PAY)");
             }
         }
     }
@@ -113,12 +117,12 @@ public class Main {
             try {
                 return FuelType.valueOf(readLine(label).toUpperCase());
             } catch (IllegalArgumentException e) {
-                System.out.println("Geçersiz yakıt türü. (BENZIN/DIZEL/LPG)");
+                System.out.println("Geçersiz yakıt türü (BENZIN / DIZEL / LPG)");
             }
         }
     }
 
-    // -------- CORE FLOW --------
+    // ================= RENT =================
 
     private static void handleRent() {
         int carId = readInt("Araç ID: ");
@@ -133,7 +137,7 @@ public class Main {
         }
 
         String name = readLine("Müşteri adı: ");
-        String phone = readPhone("Telefon (10-11 hane): ");
+        String phone = readPhone("Telefon: ");
 
         Customer customer = new Customer(nextCustomerId++, name, phone);
         customers.add(customer);
@@ -154,7 +158,7 @@ public class Main {
         );
         payments.add(payment);
 
-        System.out.println("Kiralama oluşturuldu:");
+        System.out.println("Kiralama başarılı:");
         System.out.println(rental);
         System.out.println("Ödeme alındı:");
         System.out.println(payment);
@@ -165,13 +169,15 @@ public class Main {
         for (Rental r : rentals) {
             if (r.getRentalId() == rid) {
                 r.closeRental();
-                System.out.println("Kiralama kapatıldı:");
+                System.out.println("Araç iade edildi:");
                 System.out.println(r);
                 return;
             }
         }
         System.out.println("Rental bulunamadı.");
     }
+
+    // ================= LIST =================
 
     private static void listRentals() {
         if (rentals.isEmpty()) {
@@ -189,26 +195,21 @@ public class Main {
         payments.forEach(System.out::println);
     }
 
-    // -------- FILTER MENU --------
+    // ================= FILTER =================
 
     private static void handleFilteringMenu() {
-        System.out.println("\n--- FİLTRELEME MENÜSÜ ---");
-        System.out.println("1 - Markaya göre müsait araçlar");
-        System.out.println("2 - Yakıt türüne göre (BENZIN/DIZEL/LPG) müsait araçlar");
-        System.out.println("3 - Sadece GasCar müsait araçlar");
-        System.out.println("4 - Sadece ElectricCar müsait araçlar");
+        System.out.println("\n--- FİLTRELEME ---");
+        System.out.println("1 - Markaya göre");
+        System.out.println("2 - Yakıt türüne göre");
+        System.out.println("3 - GasCar");
+        System.out.println("4 - ElectricCar");
         System.out.println("0 - Geri dön");
+
         int c = readInt("Seçim: ");
 
         switch (c) {
-            case 1 -> {
-                String brand = readLine("Marka gir: ");
-                printCars(inventory.filterAvailableByBrand(brand));
-            }
-            case 2 -> {
-                FuelType ft = readFuelType("Yakıt türü (BENZIN/DIZEL/LPG): ");
-                printCars(inventory.filterAvailableByFuelType(ft));
-            }
+            case 1 -> printCars(inventory.filterAvailableByBrand(readLine("Marka: ")));
+            case 2 -> printCars(inventory.filterAvailableByFuelType(readFuelType("Yakıt: ")));
             case 3 -> printCars(inventory.filterAvailableGasCars());
             case 4 -> printCars(inventory.filterAvailableElectricCars());
             case 0 -> { return; }
@@ -221,38 +222,33 @@ public class Main {
             System.out.println("Sonuç yok.");
             return;
         }
-        for (Car car : cars) {
-            System.out.println(car);
-        }
+        cars.forEach(System.out::println);
     }
 
-    // -------- CAR MANAGEMENT (NEW) --------
+    // ================= INVENTORY =================
 
     private static void handleAddCar() {
         System.out.println("\n--- ARAÇ EKLE ---");
         System.out.println("1 - GasCar");
         System.out.println("2 - ElectricCar");
         System.out.println("3 - LuxuryCar");
-        int t = readInt("Tür seç: ");
 
-        int id = readInt("Yeni araç ID: ");
+        int t = readInt("Tür: ");
+        int id = readInt("ID: ");
         String brand = readLine("Marka: ");
         String model = readLine("Model: ");
-        int dailyRateInt = readPositiveInt("Günlük ücret (tam sayı gir): ");
-        double dailyRate = dailyRateInt;
+        double dailyRate = readPositiveInt("Günlük ücret: ");
 
         Car car;
 
         if (t == 1) {
-            FuelType ft = readFuelType("Yakıt türü (BENZIN/DIZEL/LPG): ");
-            car = new GasCar(id, brand, model, dailyRate, ft);
+            car = new GasCar(id, brand, model, dailyRate, readFuelType("Yakıt: "));
         } else if (t == 2) {
-            int range = readPositiveInt("Menzil (km): ");
-            car = new ElectricCar(id, brand, model, dailyRate, range);
+            car = new ElectricCar(id, brand, model, dailyRate, readPositiveInt("Menzil: "));
         } else if (t == 3) {
             car = new LuxuryCar(id, brand, model, dailyRate);
         } else {
-            System.out.println("Geçersiz tür!");
+            System.out.println("Geçersiz tür.");
             return;
         }
 
@@ -262,10 +258,45 @@ public class Main {
 
     private static void handleRemoveCar() {
         int id = readInt("Silinecek araç ID: ");
-        boolean ok = inventory.removeCar(id);
-        if (ok) System.out.println("Araç silindi.");
-        else System.out.println("Araç bulunamadı.");
+        System.out.println(
+                inventory.removeCar(id) ? "Araç silindi." : "Araç bulunamadı."
+        );
     }
+
+    // ================= RECEIPT =================
+
+    private static void printReceipt() {
+        int rid = readInt("Rental ID: ");
+
+        Rental rental = null;
+        for (Rental r : rentals) {
+            if (r.getRentalId() == rid) {
+                rental = r;
+                break;
+            }
+        }
+
+        if (rental == null) {
+            System.out.println("Rental bulunamadı.");
+            return;
+        }
+
+        Payment payment = null;
+        for (Payment p : payments) {
+            if (p.getRentalId() == rid) {
+                payment = p;
+                break;
+            }
+        }
+
+        System.out.println("\n===== RECEIPT =====");
+        System.out.println(rental);
+        if (payment != null) System.out.println(payment);
+        else System.out.println("Ödeme bulunamadı.");
+        System.out.println("===================");
+    }
+
+    // ================= EXIT =================
 
     private static void exit() {
         System.out.println("Çıkılıyor...");

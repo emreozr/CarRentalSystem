@@ -2,9 +2,6 @@ package com.carrental;
 
 import java.time.LocalDateTime;
 
-/**
- * Represents a payment made for a rental.
- */
 public class Payment {
 
     private final int paymentId;
@@ -12,21 +9,42 @@ public class Payment {
     private final double amount;
     private final PaymentMethod method;
     private final LocalDateTime paidAt;
+    private PaymentStatus status;
 
-    /**
-     * Creates a payment record.
-     *
-     * @param paymentId unique payment id
-     * @param rentalId  related rental id
-     * @param amount    payment amount
-     * @param method    payment method
-     */
     public Payment(int paymentId, int rentalId, double amount, PaymentMethod method) {
         this.paymentId = paymentId;
         this.rentalId = rentalId;
         this.amount = amount;
         this.method = method;
         this.paidAt = LocalDateTime.now();
+        this.status = PaymentStatus.PAID; // kiralama anında ödendi varsayıyoruz
+    }
+
+    public int getRentalId() {
+        return rentalId;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public PaymentMethod getMethod() {
+        return method;
+    }
+
+    public LocalDateTime getPaidAt() {
+        return paidAt;
+    }
+
+    public PaymentStatus getStatus() {
+        return status;
+    }
+
+    public void refund() {
+        if (status == PaymentStatus.REFUNDED) {
+            throw new IllegalStateException("Ödeme zaten iade edilmiş.");
+        }
+        status = PaymentStatus.REFUNDED;
     }
 
     @Override
@@ -35,6 +53,7 @@ public class Payment {
                 " | Rental: " + rentalId +
                 " | Tutar: " + amount +
                 " | Yöntem: " + method +
+                " | Durum: " + status +
                 " | Tarih: " + paidAt;
     }
 }
