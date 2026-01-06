@@ -50,19 +50,26 @@ public class Main {
     // ================= MENU =================
 
     private static void printMenu() {
-        System.out.println("\n=== ARAÇ KİRALAMA SİSTEMİ ===");
-        System.out.println("1 - Müsait araçları listele");
-        System.out.println("2 - Araç kirala");
-        System.out.println("3 - Araç iade et (Rental ID)");
-        System.out.println("4 - Tüm araçları listele");
-        System.out.println("5 - Kiralamaları listele");
-        System.out.println("6 - Ödemeleri listele");
-        System.out.println("7 - Filtreleme menüsü");
-        System.out.println("8 - Araç ekle");
-        System.out.println("9 - Araç sil (ID)");
-        System.out.println("10 - Receipt / Fiş yazdır");
-        System.out.println("0 - Çıkış");
+        System.out.println();
+        System.out.println("======================================");
+        System.out.println("        ARAÇ KİRALAMA SİSTEMİ          ");
+        System.out.println("======================================");
+        System.out.println("[1]  Müsait araçları listele");
+        System.out.println("[2]  Araç kirala");
+        System.out.println("[3]  Araç iade et (Rental ID)");
+        System.out.println("[4]  Tüm araçları listele");
+        System.out.println("[5]  Kiralamaları listele");
+        System.out.println("[6]  Ödemeleri listele");
+        System.out.println("--------------------------------------");
+        System.out.println("[7]  Filtreleme menüsü");
+        System.out.println("[8]  Araç ekle");
+        System.out.println("[9]  Araç sil (ID)");
+        System.out.println("--------------------------------------");
+        System.out.println("[10] Receipt / Fiş yazdır");
+        System.out.println("[0]  Çıkış");
+        System.out.println("======================================");
     }
+
 
     // ================= INPUT =================
 
