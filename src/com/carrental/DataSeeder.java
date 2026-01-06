@@ -10,7 +10,7 @@ public class DataSeeder {
     public static List<Car> seedCars() {
         List<Car> cars = new ArrayList<>();
 
-        // 1..40: GasCar (çeşitli marka/model/yakıt)
+        // 1..40 GasCar
         cars.add(new GasCar(1, "Toyota", "Corolla", 800, FuelType.BENZIN));
         cars.add(new GasCar(2, "Toyota", "Yaris", 700, FuelType.DIZEL));
         cars.add(new GasCar(3, "Renault", "Clio", 650, FuelType.LPG));
@@ -53,17 +53,19 @@ public class DataSeeder {
         cars.add(new GasCar(39, "Toyota", "Camry", 1400, FuelType.BENZIN));
         cars.add(new GasCar(40, "Renault", "Symbol", 600, FuelType.DIZEL));
 
-        // 41..50: ElectricCar (çeşitli marka/model)
+        // 41..45 ElectricCar (5 adet)
         cars.add(new ElectricCar(41, "Tesla", "Model 3", 1200, 500));
         cars.add(new ElectricCar(42, "Tesla", "Model Y", 1400, 480));
         cars.add(new ElectricCar(43, "Togg", "T10X", 1100, 520));
-        cars.add(new ElectricCar(44, "Nissan", "Leaf", 950, 300));
-        cars.add(new ElectricCar(45, "BMW", "i3", 1150, 280));
-        cars.add(new ElectricCar(46, "Hyundai", "Ioniq 5", 1300, 450));
-        cars.add(new ElectricCar(47, "Kia", "EV6", 1350, 480));
-        cars.add(new ElectricCar(48, "Volkswagen", "ID.4", 1250, 420));
-        cars.add(new ElectricCar(49, "Renault", "Zoe", 900, 260));
-        cars.add(new ElectricCar(50, "Peugeot", "e-208", 980, 300));
+        cars.add(new ElectricCar(44, "Volkswagen", "ID.4", 1250, 420));
+        cars.add(new ElectricCar(45, "Hyundai", "Ioniq 5", 1300, 450));
+
+        // 46..50 LuxuryCar (5 adet)
+        cars.add(new LuxuryCar(46, "BMW", "7 Series", 2500));
+        cars.add(new LuxuryCar(47, "Mercedes", "S Class", 2700));
+        cars.add(new LuxuryCar(48, "Audi", "A8", 2600));
+        cars.add(new LuxuryCar(49, "Porsche", "Panamera", 3200, 0.40));
+        cars.add(new LuxuryCar(50, "Jaguar", "XJ", 2800, 0.35));
 
         return cars;
     }

@@ -19,7 +19,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // ✅ 50 aracı tek seferde yükle
+        // ✅ 50 araç seed (Electric + Luxury dahil)
         inventory.addCars(DataSeeder.seedCars());
 
         while (true) {
@@ -35,6 +35,8 @@ public class Main {
                     case 5 -> listRentals();
                     case 6 -> listPayments();
                     case 7 -> handleFilteringMenu();
+                    case 8 -> handleAddCar();     // yeni
+                    case 9 -> handleRemoveCar();  // yeni
                     case 0 -> exit();
                     default -> System.out.println("Geçersiz seçim!");
                 }
@@ -53,8 +55,12 @@ public class Main {
         System.out.println("5 - Kiralamaları listele");
         System.out.println("6 - Ödemeleri listele");
         System.out.println("7 - Filtreleme menüsü");
+        System.out.println("8 - Araç ekle");
+        System.out.println("9 - Araç sil (ID)");
         System.out.println("0 - Çıkış");
     }
+
+    // -------- INPUT HELPERS --------
 
     private static int readInt(String label) {
         System.out.print(label);
@@ -101,6 +107,18 @@ public class Main {
             }
         }
     }
+
+    private static FuelType readFuelType(String label) {
+        while (true) {
+            try {
+                return FuelType.valueOf(readLine(label).toUpperCase());
+            } catch (IllegalArgumentException e) {
+                System.out.println("Geçersiz yakıt türü. (BENZIN/DIZEL/LPG)");
+            }
+        }
+    }
+
+    // -------- CORE FLOW --------
 
     private static void handleRent() {
         int carId = readInt("Araç ID: ");
@@ -171,6 +189,8 @@ public class Main {
         payments.forEach(System.out::println);
     }
 
+    // -------- FILTER MENU --------
+
     private static void handleFilteringMenu() {
         System.out.println("\n--- FİLTRELEME MENÜSÜ ---");
         System.out.println("1 - Markaya göre müsait araçlar");
@@ -196,16 +216,6 @@ public class Main {
         }
     }
 
-    private static FuelType readFuelType(String label) {
-        while (true) {
-            try {
-                return FuelType.valueOf(readLine(label).toUpperCase());
-            } catch (IllegalArgumentException e) {
-                System.out.println("Geçersiz yakıt türü. (BENZIN/DIZEL/LPG)");
-            }
-        }
-    }
-
     private static void printCars(List<Car> cars) {
         if (cars.isEmpty()) {
             System.out.println("Sonuç yok.");
@@ -214,6 +224,47 @@ public class Main {
         for (Car car : cars) {
             System.out.println(car);
         }
+    }
+
+    // -------- CAR MANAGEMENT (NEW) --------
+
+    private static void handleAddCar() {
+        System.out.println("\n--- ARAÇ EKLE ---");
+        System.out.println("1 - GasCar");
+        System.out.println("2 - ElectricCar");
+        System.out.println("3 - LuxuryCar");
+        int t = readInt("Tür seç: ");
+
+        int id = readInt("Yeni araç ID: ");
+        String brand = readLine("Marka: ");
+        String model = readLine("Model: ");
+        int dailyRateInt = readPositiveInt("Günlük ücret (tam sayı gir): ");
+        double dailyRate = dailyRateInt;
+
+        Car car;
+
+        if (t == 1) {
+            FuelType ft = readFuelType("Yakıt türü (BENZIN/DIZEL/LPG): ");
+            car = new GasCar(id, brand, model, dailyRate, ft);
+        } else if (t == 2) {
+            int range = readPositiveInt("Menzil (km): ");
+            car = new ElectricCar(id, brand, model, dailyRate, range);
+        } else if (t == 3) {
+            car = new LuxuryCar(id, brand, model, dailyRate);
+        } else {
+            System.out.println("Geçersiz tür!");
+            return;
+        }
+
+        inventory.addCar(car);
+        System.out.println("Araç eklendi: " + car);
+    }
+
+    private static void handleRemoveCar() {
+        int id = readInt("Silinecek araç ID: ");
+        boolean ok = inventory.removeCar(id);
+        if (ok) System.out.println("Araç silindi.");
+        else System.out.println("Araç bulunamadı.");
     }
 
     private static void exit() {

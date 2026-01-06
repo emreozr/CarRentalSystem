@@ -7,17 +7,33 @@ public class CarInventory {
     private final List<Car> cars = new ArrayList<>();
 
     public void addCar(Car car) {
+        if (car == null) throw new IllegalArgumentException("Araç null olamaz.");
+
+        if (findCarById(car.getId()) != null) {
+            throw new IllegalArgumentException("Bu ID zaten kullanılıyor: " + car.getId());
+        }
         cars.add(car);
     }
 
     public void addCars(List<Car> carList) {
+        if (carList == null || carList.isEmpty()) return;
+
+        for (Car c : carList) {
+            if (c == null) continue;
+            if (findCarById(c.getId()) != null) {
+                throw new IllegalArgumentException("Seed içinde çakışan ID var: " + c.getId());
+            }
+        }
+
         cars.addAll(carList);
         System.out.println(carList.size() + " araç envantere eklendi.");
     }
 
-    public void removeCar(int id) {
-        cars.removeIf(car -> car.getId() == id);
-        System.out.println("Araç silindi.");
+    public boolean removeCar(int id) {
+        Car found = findCarById(id);
+        if (found == null) return false;
+        cars.remove(found);
+        return true;
     }
 
     public Car findCarById(int id) {
@@ -48,7 +64,7 @@ public class CarInventory {
         }
     }
 
-    // ---------------- FILTERING (varsa önceki committen kaldıysa kalsın) ----------------
+    // --------- FILTERING ---------
 
     public List<Car> filterAvailableByBrand(String brand) {
         List<Car> result = new ArrayList<>();
