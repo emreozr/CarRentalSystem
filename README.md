@@ -226,7 +226,7 @@ amaçlar.
 ---
 
 ## 👩‍💻 Geliştirici
-- **İsim:** Merve  
+- **İsim:** Emre 
 - **Ders:** Nesne Tabanlı Programlama  
 - **Dil:** Java  
 
